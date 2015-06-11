@@ -1,0 +1,2 @@
+#!/bin/sh
+feh  --bg-fill '/home/anna/.config/bspwm/wallpapers/a4.png' 

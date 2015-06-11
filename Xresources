@@ -1,0 +1,37 @@
+! xterm ----------------------------------------------------------------------
+
+xterm*VT100.geometry:     80x25
+xterm*faceName:           GohuFont:style=Regular:size=9
+xterm*dynamicColors:      true
+xterm*utf8:               2
+xterm*eightBitInput:      true
+xterm*saveLines:          false
+xterm*scrollKey:          true
+xterm*scrollTtyOutput:    false
+xterm*scrollBar:          false
+xterm*rightScrollBar:     false
+xterm*jumpScroll:         true
+xterm*multiScroll:        true
+xterm*toolBar:            false
+
+
+! terminal colors--------------------
+
+*background: #cccccc
+*foreground: #191919
+*color0: #dafff4
+*color8: #aeccc3
+*color1: #f0ff9f
+*color9: #c0cc7f
+*color2: #ae9fff
+*color10: #8b7fcc
+*color3: #daffda
+*color11: #afccae
+*color4: #ffc79f
+*color12: #cc9f7f
+*color5: #9fd5ff
+*color13: #7faacc
+*color6: #daffe7
+*color14: #aeccb8
+*color7: #ffeb9f
+*color15: #ccbc7f
