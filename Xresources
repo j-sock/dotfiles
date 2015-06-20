@@ -17,21 +17,21 @@ xterm*toolBar:            false
 
 ! terminal colors--------------------
 
-*background: #cccccc
-*foreground: #191919
-*color0: #dafff4
-*color8: #aeccc3
-*color1: #f0ff9f
-*color9: #c0cc7f
-*color2: #ae9fff
-*color10: #8b7fcc
-*color3: #daffda
-*color11: #afccae
-*color4: #ffc79f
-*color12: #cc9f7f
-*color5: #9fd5ff
-*color13: #7faacc
-*color6: #daffe7
-*color14: #aeccb8
-*color7: #ffeb9f
-*color15: #ccbc7f
+*background: #1f1f1f
+*foreground: #cccccc
+*color0: #aeccc3
+*color8: #dafff4
+*color1: #c0cc7f
+*color9: #f0ff9f
+*color2: #8b7fcc
+*color10: #ae9fff
+*color3: #afccae
+*color11: #daffda
+*color4: #cc9f7f
+*color12: #ffc79f
+*color5: #7faacc
+*color13: #9fd5ff
+*color6: #aeccb8
+*color14: #daffe7
+*color7: #ccbc7f
+*color15: #ffeb9f

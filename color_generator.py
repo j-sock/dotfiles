@@ -3,14 +3,15 @@ from colorsys import hsv_to_rgb
 import sys
 
 MAX_VALUE = 255
-SAT_HIGH = MAX_VALUE
 SAT_MID = int(MAX_VALUE*0.67)
 SAT_LOW = int(MAX_VALUE*0.33)
-FILE_NAME = '.Xresources'
+CONFIG_DIR = '/home/anna/.config/'
+X_FILE = 'Xresources'
+PANEL_FILE = 'bar/panel_colors'
 NUM_COLOR_PAIRS = 9
 MAX_DIST = 15
 
-def main(image_path, directory):
+def main(image_path):
     image = Image.open(image_path)
     image_hsv = image.convert('HSV')
     width, height = image.size
@@ -43,7 +44,8 @@ def main(image_path, directory):
     
     colors = get_colors(hue_sat_choices, MAX_DIST)
     # draw_scheme(colors)
-    write_scheme(colors, directory)
+    write_x_scheme(colors)
+    write_panel_scheme(colors)
 
 
 def get_sat_tier(sat):
@@ -53,11 +55,11 @@ def get_sat_tier(sat):
 
 
 def get_colors(hues, max_dist):
-    colors = [((0, 0, int(MAX_VALUE*0.8)), (0, 0, int(MAX_VALUE*0.1)))]
+    colors = [((0, 0, int(MAX_VALUE*0.125)), (0, 0, int(MAX_VALUE*0.8)))]
     for hue in hues:
         h = hue['hue']
         if not has_similar(colors, h, max_dist):
-            colors.append(((h, hue['sat'], MAX_VALUE), (h, hue['sat'], int(MAX_VALUE*0.8))))
+            colors.append(((h, hue['sat'], int(MAX_VALUE*0.8)), (h, hue['sat'], MAX_VALUE)))
             if len(colors) == NUM_COLOR_PAIRS:
                 return colors
 
@@ -72,8 +74,8 @@ def fill_colors(colors, max_dist):
                 inverse = colors[i][0][0] - dist
                 if inverse < 0: inverse += MAX_VALUE
                 if not has_similar(colors, inverse, max_dist):
-                    colors.append(((inverse, colors[i][0][1], MAX_VALUE), 
-                                   (inverse, colors[i][0][1], int(MAX_VALUE*0.8))))
+                    colors.append(((inverse, colors[i][0][1], int(MAX_VALUE*0.8)), 
+                                   (inverse, colors[i][0][1], MAX_VALUE)))
                     if len(colors) == NUM_COLOR_PAIRS:
                         return colors
             dist = int(dist/2)
@@ -81,7 +83,7 @@ def fill_colors(colors, max_dist):
 
     dist = int(MAX_VALUE/(NUM_COLOR_PAIRS-1))
     for i in range(NUM_COLOR_PAIRS-1):
-        colors.append(((i*dist, MAX_VALUE, MAX_VALUE), (i*dist, MAX_VALUE, int(MAX_VALUE*0.8))))
+        colors.append(((i*dist, MAX_VALUE, int(MAX_VALUE*0.8), (i*dist, MAX_VALUE, MAX_VALUE))))
     return colors
 
 def has_similar(colors, hue, max_dist):
@@ -129,12 +131,12 @@ def draw_scheme(colors):
     image.show()
 
 
-def write_scheme(colors, directory):
-    color_read = open(directory + FILE_NAME, 'r')
+def write_x_scheme(colors):
+    color_read = open(CONFIG_DIR + X_FILE, 'r')
     old_text = color_read.read()
     color_read.close()
     old_text = old_text[:old_text.index('! terminal colors')]
-    color_writeout = open(directory + FILE_NAME, 'w')
+    color_writeout = open(CONFIG_DIR + X_FILE, 'w')
     color_writeout.write(old_text + '! terminal colors' + ('-'*20) + '\n\n')
     background = get_hex(colors[0][0])
     foreground = get_hex(colors[0][1])
@@ -146,6 +148,33 @@ def write_scheme(colors, directory):
                              '\n*color' + str(index + NUM_COLOR_PAIRS - 2) + ': ' + light + '\n')
     color_writeout.close()
 
+def write_panel_scheme(colors):
+    color_writeout = open(CONFIG_DIR + PANEL_FILE, 'w')
+    background = get_hex(colors[0][0])
+    text_bright = get_hex(colors[1][1])
+    text_dark = get_hex(colors[1][0])
+    color_writeout.write("COLOR_BACKGROUND='#ff" + background[1:] + "'\n\n")
+    focous_fields = [
+        'COLOR_ACTIVE_MONITOR_FG',
+        'COLOR_FOCUSED_OCCUPIED_FG',
+        'COLOR_FOCUSED_FREE_FG',
+        'COLOR_FOCUSED_URGENT_FG',
+        'COLOR_TITLE_FG',  # title
+        'COLOR_STATUS_FG'  # output
+    ]
+    unfocous_fields = [
+        'COLOR_INACTIVE_MONITOR_FG',
+        'COLOR_OCCUPIED_FG',
+        'COLOR_FREE_FG',
+        'COLOR_URGENT_FG'
+    ]
+    for field in focous_fields:
+        color_writeout.write(field + "='#ff" + text_bright[1:] + "'\n")
+    color_writeout.write('\n')
+    for field in unfocous_fields:
+        color_writeout.write(field + "='#ff" + text_dark[1:] + "'\n")
+    color_writeout.close()
+
 
 if __name__ == '__main__':
-    main(sys.argv[1], sys.argv[2])
+    main(sys.argv[1])

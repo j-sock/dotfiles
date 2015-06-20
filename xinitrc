@@ -1,6 +1,6 @@
 #!/bin/sh
 
-userresources=$HOME/.config/.Xresources
+userresources=$HOME/.config/Xresources
 usermodmap=$HOME/.Xmodmap
 sysresources=/etc/X11/xinit/.Xresources
 sysmodmap=/etc/X11/xinit/.Xmodmap
@@ -35,4 +35,5 @@ fi
 
 sxhkd -c ~/.config/sxhkd/sxkdrc &
 sh ~/.config/fehbg &
+sh ~/.config/bar/panel &
 exec bspwm

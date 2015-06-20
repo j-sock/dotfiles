@@ -1,2 +1,4 @@
 #!/bin/sh
-feh  --bg-fill '/home/anna/.config/bspwm/wallpapers/a4.png' 
+image='/home/anna/.config/bspwm/wallpapers/a4.png' 
+feh  --bg-fill $image
+python /home/anna/.config/color_generator.py $image

@@ -1,0 +1,51 @@
+#! /bin/sh
+
+if [ $(pgrep -cx panel) -gt 1 ] ; then
+	printf "%s\n" "The panel is already running." >&2
+	exit 1
+fi
+
+trap 'trap - TERM; kill 0' INT TERM QUIT EXIT
+
+[ -e "$PANEL_FIFO" ] && rm "$PANEL_FIFO"
+mkfifo "$PANEL_FIFO"
+
+PANEL_FONT_FAMILY="-*-gohufont-medium-*-*-*-11-*-*-*-*-*-*-*"
+
+get_battery() {
+	bat_data=$(acpi)
+
+	if [ "${bat_data:11:1}" = "C" ];
+	then 
+		charging=1
+	else
+		charging=0
+	fi
+
+	percent_back=${bat_data#B*, }
+	percent=${percent_back%, *}
+
+	echo $charging $percent
+}
+
+get_time() {
+	false_hour=$(($(clock -f '%H') + 4))
+	echo $false_hour:$(clock -f '%M')
+}
+
+status_output() {
+	echo 'S' $(get_battery) $(get_time)
+}
+
+bspc config top_padding $PANEL_HEIGHT
+bspc control --subscribe > "$PANEL_FIFO" &
+xtitle -sf 'T%s' > "$PANEL_FIFO" &
+status_output > "$PANEL_FIFO" &
+# clock -sf 'S%a %H:%M' > "$PANEL_FIFO" &
+# battery > "$PANEL_FIFO" &
+
+. ~/.config/bar/panel_colors
+
+cat "$PANEL_FIFO" | sh ~/.config/bar/panel_bar | lemonbar -g x$PANEL_HEIGHT -f "$PANEL_FONT_FAMILY" -F "$COLOR_FREE_FG" -B "$COLOR_BACKGROUND" &
+
+wait
